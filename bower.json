@@ -1,0 +1,15 @@
+{
+  "name": "melchiorjs-prototype",
+  "version": "0.0.0",
+  "authors": [
+    "Alex Bardanov <dnbard@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
