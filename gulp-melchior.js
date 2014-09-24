@@ -7,6 +7,11 @@ var PLUGIN_NAME = 'gulp-melchior',
     _ = require('lodash'),
     fs = require('fs');
 
+function getConfigString(innerConfig, stringify){
+    return stringify ? 'melchiorjs.config(' + JSON.stringify(innerConfig) + ');' :
+        'melchiorjs.config(' + innerConfig + ')'
+}
+
 function gulpMelchior(){
     var stream = through.obj(function(file, enc, cb) {
         function controlCallback(self){
@@ -16,16 +21,28 @@ function gulpMelchior(){
         }
 
         var decoder = new StringDecoder('utf8'),
-            content = (decoder.write(file.contents) + '').replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:([\s;])+\/\/(?:.*)$)/gm, '').replace('\r\n', ''),
-            preJSON = content.match(/melchiorjs.config\(([\s\S]*?)\)/)[1],
+            content = (decoder.write(file.contents) + ''),
+            originalConfig = getConfigString(content.match(/melchiorjs.config\(([\s\S]*?)\)/)[1]),
+            withoutComments = content.replace(/(?:\/\*(?:[\s\S]*?)\*\/)|(?:([\s;])+\/\/(?:.*)$)/gm, '').replace('\r\n', ''),
+            preJSON = withoutComments.match(/melchiorjs.config\(([\s\S]*?)\)/)[1],
             config,
-            depsCount = 0;
+            depsCount = 0,
+            originalFileWithoutConfig = content.replace(originalConfig, '').trim(),
+            customConfig,
+            customPaths = {};
+
+        file.contents = new Buffer(originalFileWithoutConfig);
 
         //TODO: remove eval =)
         eval('config = ' + preJSON);
 
-        _.each(config.paths, function(path){
+        customConfig = config;
+
+        _.each(config.paths, function(path, index){
             if (path.indexOf('http://') !== -1 || path.indexOf('https://') !== -1){
+
+                customPaths[index] = path;
+
                 request(path, function(err, resp, body){
                     console.log('Got response from ' + path);
 
@@ -43,6 +60,9 @@ function gulpMelchior(){
                 controlCallback(this);
             }
         });
+
+        customConfig.paths = _.size(customPaths) > 0 ? customPaths: undefined;
+        file.contents = Buffer.concat([new Buffer(getConfigString(customConfig, true)), file.contents]);
 
         this.push(file);
     });
