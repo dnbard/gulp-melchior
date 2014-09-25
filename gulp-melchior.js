@@ -43,14 +43,18 @@ function gulpMelchior(){
 
                 customPaths[index] = path;
 
-                request(path, function(err, resp, body){
+                /*request(path, function(err, resp, body){
                     console.log('Got response from ' + path);
 
                     //file.contents = Buffer.concat([new Buffer(body), file.contents]);
                     //depsCount ++;
 
                     controlCallback(this);
-                });
+                });*/
+
+                console.log('%s External dependecy %s won\'t be concatenated', PLUGIN_NAME, index);
+
+                controlCallback(this);
             } else {
                 depsCount ++;
 
@@ -68,7 +72,8 @@ function gulpMelchior(){
         }
 
         if (!_.isEmpty(customConfig)){
-            file.contents = Buffer.concat([new Buffer(getConfigString(customConfig, true)), file.contents]);
+            var configContent = getConfigString(customConfig, true);
+            file.contents = Buffer.concat([new Buffer(configContent + '\n'), file.contents]);
         }
 
         this.push(file);
