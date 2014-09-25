@@ -1,4 +1,4 @@
-melchiorjs.module('module').require('app').body(function(){
+melchiorjs.module('module').body(function(){
     console.log('module');
 });
 
