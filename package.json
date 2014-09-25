@@ -21,11 +21,11 @@
     "gulp",
     "melchior.js",
     "melchior",
-    "plugin",
     "optimizer",
     "concat",
     "concatenator",
-    "module"
+    "module",
+    "gulpplugin"
   ],
   "author": "Alex Bardanov",
   "license": "MIT",
