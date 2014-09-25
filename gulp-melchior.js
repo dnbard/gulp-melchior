@@ -8,14 +8,14 @@ var PLUGIN_NAME = 'gulp-melchior',
 
 function getConfigString(innerConfig, stringify){
     return stringify ? 'melchiorjs.config(' + JSON.stringify(innerConfig) + ');' :
-        'melchiorjs.config(' + innerConfig + ')'
+        'melchiorjs.config(' + innerConfig + ')';
 }
 
 function gulpMelchior(options){
     options = options || {};
 
     var stream = through.obj(function(file, enc, cb) {
-        function controlCallback(self){
+        function controlCallback(){
             if (depsCount === config.paths.length){
                 cb();
             }
@@ -48,12 +48,12 @@ function gulpMelchior(options){
                 customPaths[index] = path;
                 console.log('%s External dependecy %s won\'t be concatenated', PLUGIN_NAME, index);
 
-                controlCallback(this);
+                controlCallback();
             } else {
                 var body = fs.readFileSync(prePath + path) + '\n';
                 file.contents = Buffer.concat([new Buffer(body), file.contents]);
 
-                controlCallback(this);
+                controlCallback();
             }
         });
 
