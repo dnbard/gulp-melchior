@@ -1,0 +1,37 @@
+{
+  "name": "gulp-melchior",
+  "version": "0.1.1",
+  "description": "Gulp plugin that optimize Melchior.js modules",
+  "main": "gulp-melchior.js",
+  "dependencies": {
+    "gulp": "~3.8.8",
+    "gulp-util": "~3.0.1",
+    "request": "~2.44.0",
+    "lodash": "~2.4.1",
+    "through2": "~0.6.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dnbard/gulp-melchior.git"
+  },
+  "keywords": [
+    "gulp",
+    "melchior.js",
+    "melchior",
+    "plugin",
+    "optimizer",
+    "concat",
+    "concatenator",
+    "module"
+  ],
+  "author": "Alex Bardanov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dnbard/gulp-melchior/issues"
+  },
+  "homepage": "https://github.com/dnbard/gulp-melchior"
+}

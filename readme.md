@@ -1,7 +1,7 @@
 Gulp Melchior
 =============
 
-> Optimize (concatenate) [melchior.js](https://github.com/voronianski/melchior.js) projects using Gulp plugin.
+Optimize (concatenate) [melchior.js](https://github.com/voronianski/melchior.js) projects using Gulp plugin.
 
 Getting Started
 ---------------
@@ -42,7 +42,8 @@ Options
 }));
 ```
 
-* path: String
+path: String
+____________
 
 This option is used when file with Melchior config isn't in the same folder as Gulp Melchior(common case). When `config.js` is in `folder/`:
 
@@ -54,6 +55,7 @@ gulp.task('melchior', function(){
     }))
     .pipe(gulp.dest('build'));
 });
+```
 
 *Please end `path` with correct path delimeter character.*
 
