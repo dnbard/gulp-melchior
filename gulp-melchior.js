@@ -3,7 +3,6 @@ var PLUGIN_NAME = 'gulp-melchior',
     gutil = require('gulp-util'),
     PluginError = gutil.PluginError,
     StringDecoder = require('string_decoder').StringDecoder,
-    request = require('request'),
     _ = require('lodash'),
     fs = require('fs');
 
@@ -12,7 +11,9 @@ function getConfigString(innerConfig, stringify){
         'melchiorjs.config(' + innerConfig + ')'
 }
 
-function gulpMelchior(){
+function gulpMelchior(options){
+    options = options || {};
+
     var stream = through.obj(function(file, enc, cb) {
         function controlCallback(self){
             if (depsCount === config.paths.length){
@@ -28,8 +29,9 @@ function gulpMelchior(){
             config,
             depsCount = 0,
             originalFileWithoutConfig = content.replace(originalConfig, '').trim(),
-            customConfig,
-            customPaths = {};
+            customPaths = {},
+            prePath = options.path || '',
+            customConfig;
 
         file.contents = new Buffer(originalFileWithoutConfig);
 
@@ -39,26 +41,16 @@ function gulpMelchior(){
         customConfig = config;
 
         _.each(config.paths, function(path, index){
+            depsCount ++;
+
             if (path.indexOf('http://') !== -1 || path.indexOf('https://') !== -1){
 
                 customPaths[index] = path;
-
-                /*request(path, function(err, resp, body){
-                    console.log('Got response from ' + path);
-
-                    //file.contents = Buffer.concat([new Buffer(body), file.contents]);
-                    //depsCount ++;
-
-                    controlCallback(this);
-                });*/
-
                 console.log('%s External dependecy %s won\'t be concatenated', PLUGIN_NAME, index);
 
                 controlCallback(this);
             } else {
-                depsCount ++;
-
-                var body = fs.readFileSync(path) + '\n';
+                var body = fs.readFileSync(prePath + path) + '\n';
                 file.contents = Buffer.concat([new Buffer(body), file.contents]);
 
                 controlCallback(this);

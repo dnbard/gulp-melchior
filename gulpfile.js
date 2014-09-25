@@ -2,7 +2,9 @@ var gulp = require('gulp'),
     melchior = require('./gulp-melchior');
 
 gulp.task('default', function(){
-    gulp.src('entry.js')
-        .pipe(melchior())
+    gulp.src('folder/entry.js')
+        .pipe(melchior({
+            path: 'folder/'
+        }))
         .pipe(gulp.dest('modified-files'));
 });
