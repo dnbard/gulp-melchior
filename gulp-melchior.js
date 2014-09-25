@@ -61,8 +61,15 @@ function gulpMelchior(){
             }
         });
 
-        customConfig.paths = _.size(customPaths) > 0 ? customPaths: undefined;
-        file.contents = Buffer.concat([new Buffer(getConfigString(customConfig, true)), file.contents]);
+        if (_.size(customPaths) > 0){
+            customConfig.paths = customPaths;
+        } else {
+            delete customConfig.paths;
+        }
+
+        if (!_.isEmpty(customConfig)){
+            file.contents = Buffer.concat([new Buffer(getConfigString(customConfig, true)), file.contents]);
+        }
 
         this.push(file);
     });
