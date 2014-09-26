@@ -43,7 +43,7 @@ function gulpMelchior(options){
         _.each(config.paths, function(path, index){
             depsCount ++;
 
-            if (path.indexOf('http://') !== -1 || path.indexOf('https://') !== -1){
+            if (path.indexOf('http://') !== -1 || path.indexOf('https://') !== -1 || path.indexOf('//') !== -1){
 
                 customPaths[index] = path;
                 console.log('%s External dependecy %s won\'t be concatenated', PLUGIN_NAME, index);
