@@ -11,6 +11,38 @@ function getConfigString(innerConfig, stringify){
         'melchiorjs.config(' + innerConfig + ')';
 }
 
+function prepareDependency(body, moduleName, config){
+    if ((body+'').indexOf('melchiorjs.module') >= 0){
+        //this is Melchior module, skip it
+        return body;
+    }
+
+    var template = 'melchiorjs.module(\'${name}\')${require}.body(function(){${module}});',
+        require = '';
+
+    if (config.shim && config.shim[moduleName] && _.isArray(config.shim[moduleName].deps)){
+        _.each(config.shim[moduleName].deps, function(dep){
+            require += '.require(\'' + dep + '\')';
+        });
+    }
+
+    return _.template(template, {
+        name: moduleName,
+        require: require,
+        module: body
+    });
+}
+
+function preparePath(path, basePath){
+    var result = basePath + path + '';
+
+    if (result.indexOf('.js') === -1){
+        result += '.js';
+    }
+
+    return result;
+}
+
 function gulpMelchior(options){
     options = options || {};
 
@@ -50,7 +82,7 @@ function gulpMelchior(options){
 
                 controlCallback();
             } else {
-                var body = fs.readFileSync(prePath + path) + '\n';
+                var body = prepareDependency(fs.readFileSync(preparePath(path, prePath)), index, config) + '\n';
                 file.contents = Buffer.concat([new Buffer(body), file.contents]);
 
                 controlCallback();
