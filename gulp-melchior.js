@@ -26,11 +26,29 @@ function prepareDependency(body, moduleName, config){
         });
     }
 
+    removeDepsFromConfig(config, moduleName);
+
     return _.template(template, {
         name: moduleName,
         require: require,
         module: body
     });
+}
+
+function removeDepsFromConfig(config, moduleName){
+    if (!config.shim || !config.shim[moduleName]){
+        return;
+    }
+
+    delete config.shim[moduleName].deps;
+
+    if (_.size(config.shim[moduleName]) === 0){
+        delete config.shim[moduleName];
+    }
+
+    if (_.size(config.shim) === 0){
+        delete config.shim;
+    }
 }
 
 function preparePath(path, basePath){
@@ -41,6 +59,14 @@ function preparePath(path, basePath){
     }
 
     return result;
+}
+
+function autocompleteMissingMelchiorDeclaration(entryFile){
+    if (/^\.module/.test(entryFile)){
+        return 'melchiorjs' + entryFile;
+    }
+
+    return entryFile;
 }
 
 function gulpMelchior(options){
@@ -60,7 +86,7 @@ function gulpMelchior(options){
             preJSON = withoutComments.match(/melchiorjs.config\(([\s\S]*?)\)/)[1],
             config,
             depsCount = 0,
-            originalFileWithoutConfig = content.replace(originalConfig, '').trim(),
+            originalFileWithoutConfig = autocompleteMissingMelchiorDeclaration(content.replace(originalConfig, '').trim()),
             customPaths = {},
             prePath = options.path || '',
             customConfig;
