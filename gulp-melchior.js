@@ -17,30 +17,37 @@ function prepareDependency(body, moduleName, config){
         return body;
     }
 
-    var template = 'melchiorjs.module(\'${name}\')${require}.body(function(){${module}});',
-        require = '';
+    var template = '(function(melchiorjs){${module};melchiorjs.module(\'${name}\')${require}.body(function(){return ${exports};});})(melchiorjs);',
+        require = '',
+        exports;
 
-    if (config.shim && config.shim[moduleName] && _.isArray(config.shim[moduleName].deps)){
-        _.each(config.shim[moduleName].deps, function(dep){
-            require += '.require(\'' + dep + '\')';
-        });
+    if (config.shim && config.shim[moduleName]){
+        exports = config.shim[moduleName].exports;
+
+        if(_.isArray(config.shim[moduleName].deps)){
+            _.each(config.shim[moduleName].deps, function(dep){
+                require += '.require(\'' + dep + '\')';
+            });
+        }
     }
 
-    removeDepsFromConfig(config, moduleName);
+    removePropertyFromConfig(config, moduleName, 'deps');
+    removePropertyFromConfig(config, moduleName, 'exports');
 
     return _.template(template, {
         name: moduleName,
+        exports: exports || moduleName,
         require: require,
         module: body
     });
 }
 
-function removeDepsFromConfig(config, moduleName){
-    if (!config.shim || !config.shim[moduleName]){
+function removePropertyFromConfig(config, moduleName, property){
+    if (!config.shim || !config.shim[moduleName] || !config.shim[moduleName][property]){
         return;
     }
 
-    delete config.shim[moduleName].deps;
+    delete config.shim[moduleName][property];
 
     if (_.size(config.shim[moduleName]) === 0){
         delete config.shim[moduleName];
