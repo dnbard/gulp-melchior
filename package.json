@@ -1,6 +1,6 @@
 {
   "name": "gulp-melchior",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Gulp plugin for Melchior.js modules optimization",
   "main": "gulp-melchior.js",
   "dependencies": {

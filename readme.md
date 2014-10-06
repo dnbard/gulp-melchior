@@ -45,13 +45,35 @@ Options
 path: String
 ____________
 
-This option is used when file with Melchior config isn't in the same folder as Gulp Melchior(common case). When `config.js` is in `folder/`:
+This option is used when file with Melchior config isn't in the same folder as Gulp(this is normal).
 
+Folder structure:
+```
+├──gulpfile.js
+└──app
+   ├──js
+   │  ├──config.js
+   │  ├──app.js
+   │  └──module.js
+   ├──html
+   └──css
+```
+
+MelchiorJS config:
+```js
+melchiorjs.config({
+  paths: {
+    'module': 'js/module.js'
+  }
+});
+```
+
+Gulp Task example:
 ```js
 gulp.task('melchior', function(){
-  gulp.src('folder/config.js')
+  gulp.src('app/js/config.js')
     .pipe(melchior({
-      path: 'folder/'
+      path: 'app/'
     }))
     .pipe(gulp.dest('build'));
 });
